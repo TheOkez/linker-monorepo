@@ -40,4 +40,4 @@ Follow these steps to run the backend locally:
     ```
 
     ![Alt text](images/app.png)
-> The frontend service will be available here:(http://localhost:3001).
+> The frontend service will be available here:(http://localhost:3001).# Trigger Docker push
