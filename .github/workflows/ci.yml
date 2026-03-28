@@ -1,0 +1,52 @@
+name: Linker CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build frontend image
+        run: docker build -t linker-frontend:ci ./frontend
+
+      - name: Build backend image
+        run: docker build -t linker-backend:ci ./backend
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+
+      - name: Run Trivy frontend image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: linker-frontend:ci
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+
+      - name: Run Trivy backend image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: linker-backend:ci
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
