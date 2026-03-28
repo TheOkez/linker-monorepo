@@ -29,14 +29,14 @@ jobs:
         run: docker build -t linker-backend:ci ./backend
 
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@57a97c7
         with:
           scan-type: fs
           scan-ref: .
           format: table
 
       - name: Run Trivy frontend image scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@57a97c7
         with:
           image-ref: linker-frontend:ci
           format: table
@@ -44,7 +44,7 @@ jobs:
           severity: CRITICAL,HIGH
 
       - name: Run Trivy backend image scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@57a97c7
         with:
           image-ref: linker-backend:ci
           format: table
