@@ -1,0 +1,53 @@
+services:
+
+  # ─── Frontend ───────────────────────────────────────────────
+  frontend:
+    image: linker-frontend   # run `docker images` to get the image name
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - bootcamp-network
+
+  # ─── Backend ────────────────────────────────────────────────
+  backend:
+    image: linker-backend    # run `docker images` to get the image name
+    container_name: backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - database
+    environment:
+      DATABASE_PORT: 5432
+      DATABASE_HOST: database
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: bootcamp
+      CORS_ORIGIN: "http://localhost:3000,http://127.0.0.1:3000"
+    networks:
+      - bootcamp-network
+
+  # ─── Database ───────────────────────────────────────────────
+  database:
+    image: postgres:15-alpine
+    container_name: database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bootcamp
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bootcamp-network
+
+# ─── Volumes ──────────────────────────────────────────────────
+volumes:
+  postgres_data:
+
+# ─── Networks ─────────────────────────────────────────────────
+networks:
+  bootcamp-network:
